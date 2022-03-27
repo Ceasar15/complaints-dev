@@ -107,4 +107,32 @@ class ComplaintsFormView(generics.ListCreateAPIView):
         return self.queryset.filter(user=self.request.user)
 
 
+class UpdateComplaintsForm(generics.UpdateAPIView):
+    queryset = ComplaintsForm.objects
+    serializer_class = ComplaintsFormSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    lookup_field = 'id'
+    pagination_class = None
+
+
+class DeleteComplaintsForm(generics.DestroyAPIView):
+    queryset = ComplaintsForm.objects
+    serializer_class = ComplaintsFormSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    lookup_field = 'id'
+    pagination_class = None
+
+
+class DetailComplaintsForm(generics.RetrieveAPIView):
+    """
+    Details of products by a user
+    """
+    queryset = ComplaintsForm.objects.all()
+    model = ComplaintsForm
+    serializer_class = ComplaintsFormSerializer
+    lookup_field = 'id'
+
+
 

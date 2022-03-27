@@ -6,7 +6,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from django.contrib.auth.models import AbstractUser
+from django.core.mail import send_mail
 
 PRIMARY_REASON = (
     ('UC', 'Unprofessional Conduct'),
@@ -55,19 +55,18 @@ class ComplaintsForm(models.Model):
     primary_reason = models.CharField(choices=PRIMARY_REASON, max_length=255)
     race_of_officer = models.CharField(choices=RACE_OF_OFFICER, max_length=255)
     phone_number = models.CharField(max_length=255)
-    upload_file = models.FileField(upload_to='complaint_upload_file')
+    upload_file = models.FileField(upload_to='complaint_upload_file', null=True, blank=True)
     were_you_arressted = models.BooleanField()
 
 
-# @receiver(post_save, sender=User)
-# def create_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance,)
-
-
-# @receiver(post_save, sender=User)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
+@receiver(post_save, sender=ComplaintsForm)
+def send_mail_to_user(*args, created, instance, **kwargs):
+    if created:
+        sender = 'ceasarkwadwo@gmail.com'
+        message = 'Your complaint was created successfully.'
+        subject = 'Complaint Submitted'
+        recipients = [instance.user.email]
+        send_mail(subject, message, sender, recipients)
 
 
 @receiver(post_delete, sender=User)
@@ -79,3 +78,12 @@ def delete_user(sender, instance=None, **kwargs):
     else:
         instance.user.delete()
 
+# @receiver(post_save, sender=User)
+# def create_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance,)
+
+
+# @receiver(post_save, sender=User)
+# def save_user_profile(sender, instance, **kwargs):
+#     instance.profile.save()

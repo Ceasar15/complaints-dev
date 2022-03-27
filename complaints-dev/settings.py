@@ -1,4 +1,4 @@
-import django_heroku
+# import django_heroku
 from pathlib import Path
 from datetime import timedelta
 import os
@@ -140,6 +140,16 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
 }
 
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ceasarkwadwo@gmail.com'
+EMAIL_HOST_PASSWORD = 'Edem12345'
+EMAIL_PORT = 587
+
+
 # CORS_REPLACE_HTTPS_REFERER = True
 # HOST_SCHEME = "https://"
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -152,4 +162,4 @@ SIMPLE_JWT = {
 
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

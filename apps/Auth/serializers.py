@@ -130,7 +130,7 @@ class ComplaintsFormSerializer(serializers.ModelSerializer):
     class Meta:
         model = ComplaintsForm
         fields = [
-            "user", "police_department", "police_department_zip_code",
+            "id", "police_department", "police_department_zip_code",
             "occured_time", "descriptions", "primary_reason", "race_of_officer",
             "phone_number", "upload_file", "were_you_arressted",
         ]
