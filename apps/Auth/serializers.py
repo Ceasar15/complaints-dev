@@ -35,7 +35,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        print(2, validated_data)
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
@@ -89,7 +88,7 @@ class ProfileSerializerGet(serializers.ModelSerializer):
         model = Profile
         fields = [
             "user", "city", "country", "state",
-            "first_name", "last_name", "username", "zip_code"
+            "first_name", "last_name", "username", "zip_code", "is_official"
         ]
 
         extra_kwargs = {

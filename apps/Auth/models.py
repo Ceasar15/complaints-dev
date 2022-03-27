@@ -1,5 +1,3 @@
-from enum import auto
-
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 from django.db import models
@@ -32,6 +30,7 @@ class Profile(models.Model):
     country = models.CharField(max_length=120, blank=False)
     state = models.CharField(max_length=120, blank=False)
     zip_code = models.CharField(max_length=5, validators=[MinLengthValidator(5)], blank=False)
+    is_official = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user
@@ -67,6 +66,12 @@ def send_mail_to_user(*args, created, instance, **kwargs):
         subject = 'Complaint Submitted'
         recipients = [instance.user.email]
         send_mail(subject, message, sender, recipients)
+        get_officials = Profile.objects.filter(zipcode=instance.user.zip_code, is_official='true')
+        print(get_officials)
+        if get_officials:
+            official_recipients = [get_officials.email]
+            print(official_recipients)
+            send_mail(subject, message, sender, official_recipients)
 
 
 @receiver(post_delete, sender=User)
