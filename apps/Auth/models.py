@@ -65,13 +65,14 @@ def send_mail_to_user(*args, created, instance, **kwargs):
         message = 'Your complaint was created successfully.'
         subject = 'Complaint Submitted'
         recipients = [instance.user.email]
-        send_mail(subject, message, sender, recipients)
-        get_officials = Profile.objects.filter(zipcode=instance.user.zip_code, is_official='true')
-        print(get_officials)
+        # send_mail(subject, message, sender, recipients)
+        print(instance.user.profile.zip_code)
+        get_officials = Profile.objects.filter(zip_code=instance.user.profile.zip_code, is_official=True)
+        print(11, get_officials)
         if get_officials:
             official_recipients = [get_officials.email]
-            print(official_recipients)
-            send_mail(subject, message, sender, official_recipients)
+            print(33, official_recipients)
+            # send_mail(subject, message, sender, official_recipients)
 
 
 @receiver(post_delete, sender=User)
