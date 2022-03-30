@@ -58,6 +58,18 @@ class ComplaintsForm(models.Model):
     were_you_arressted = models.BooleanField()
 
 
+class Comment(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='comments')
+    body = models.TextField()
+    created_on = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['created_on']
+    
+    def __str__(self):
+        return "Comment: {}".format(self.body)
+
 @receiver(post_save, sender=ComplaintsForm)
 def send_mail_to_user(*args, created, instance, **kwargs):
     if created:
@@ -65,10 +77,8 @@ def send_mail_to_user(*args, created, instance, **kwargs):
         message = 'Your complaint was created successfully.'
         subject = 'Complaint Submitted'
         recipients = [instance.user.email]
-        # send_mail(subject, message, sender, recipients)
-        print(instance.user.profile.zip_code)
+        send_mail(subject, message, sender, recipients)
         get_officials = Profile.objects.filter(zip_code=instance.user.profile.zip_code, is_official=True)
-        print(11, get_officials)
         if get_officials:
             official_recipients = [get_officials.email]
             print(33, official_recipients)

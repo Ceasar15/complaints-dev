@@ -106,6 +106,8 @@ class ProfileSerializerGet(serializers.ModelSerializer):
             instance.state = validated_data['state']
         if 'zip_code' in validated_data:
             instance.zip_code = validated_data['zip_code']
+        if 'is_official' in validated_data:
+            instance.is_official = validated_data['is_official']
         instance.save()
         return instance
 

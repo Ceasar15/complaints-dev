@@ -1,4 +1,4 @@
-import django_heroku
+# import django_heroku
 from pathlib import Path
 from datetime import timedelta
 import os
@@ -162,4 +162,4 @@ EMAIL_PORT = 587
 
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
