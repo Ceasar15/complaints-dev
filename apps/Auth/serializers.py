@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from apps.Auth.models import Profile, EmergencyContacts, ComplaintsForm
+from apps.Auth.models import Profile, EmergencyContacts, ComplaintsForm, Comment
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -142,3 +142,21 @@ class ComplaintsFormSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return ComplaintsForm.objects.create(**validated_data)
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'profile', 'body', 'created_on', 'active'
+        ]
+        extra_kwargs = {
+            'profile': {'required': False}
+        }
+
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        if 'active' in validated_data:
+            instance.active = validated_data['active']

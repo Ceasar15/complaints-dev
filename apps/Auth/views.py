@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth.models import User
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -6,10 +7,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import logout
 
-from .models import Profile, EmergencyContacts, ComplaintsForm
+from .models import Profile, EmergencyContacts, ComplaintsForm, Comment
 from .serializers import RegisterSerializer, \
     MyTokenObtainPairSerializer, ProfileSerializer, \
-    ProfileSerializerGet, EmergencyContactsSerializer, ComplaintsFormSerializer
+    ProfileSerializerGet, EmergencyContactsSerializer, ComplaintsFormSerializer, CommentSerializer
 from rest_framework import generics, status
 
 
@@ -135,4 +136,17 @@ class DetailComplaintsForm(generics.RetrieveAPIView):
     lookup_field = 'id'
 
 
+class CommentFormView(generics.ListCreateAPIView):
+    queryset = Comment.objects
+    serializer_class = CommentSerializer
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
+    pagination_class = None
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        print("get_queryset", request)
+        return self.queryset.filter(profile=self.request.user)
 
