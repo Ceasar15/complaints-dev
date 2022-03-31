@@ -33,7 +33,7 @@ class Profile(models.Model):
     is_official = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.user
+        return f"{self.user}"
 
 
 class EmergencyContacts(models.Model):

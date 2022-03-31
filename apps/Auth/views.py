@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import logout
+from rest_framework.exceptions import PermissionDenied
 
 from .models import Profile, EmergencyContacts, ComplaintsForm, Comment
 from .serializers import RegisterSerializer, \
@@ -144,9 +145,11 @@ class CommentFormView(generics.ListCreateAPIView):
     pagination_class = None
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        profile = Profile.objects.get(id=self.kwargs['id'])
+        if not profile.is_official:
+            raise PermissionDenied("Not Authorized")
+        serializer.save(profile=profile)
 
     def get_queryset(self):
-        print("get_queryset", request)
-        return self.queryset.filter(profile=self.request.user)
+        return self.queryset.filter(profile=self.kwargs['id'])
 

@@ -1,6 +1,6 @@
 from django.urls import path
 from apps.Auth.views import MyObtainTokenPairView, RegisterView, ProfileViewPost, ProfileViewUpdate, ProfileViewGet, \
-    EmergencyContactsView, logout_view, ComplaintsFormView, UpdateComplaintsForm, DeleteComplaintsForm, \
+    EmergencyContactsView, logout_view, CommentFormView, ComplaintsFormView, UpdateComplaintsForm, DeleteComplaintsForm, \
     DetailComplaintsForm
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -16,6 +16,6 @@ urlpatterns = [
     path('complaints-form-update/<int:id>', UpdateComplaintsForm.as_view(), name='complaints-dev-form-update'),
     path('complaints-form-delete/<int:id>', DeleteComplaintsForm.as_view(), name='complaints-dev-form-delete'),
     path('complaints-form-detail/<int:id>', DetailComplaintsForm.as_view(), name='complaints-dev-form-detail'),
+    path('comments/<int:id>', CommentFormView.as_view(), name='comments-list'),
     path('logout/', logout_view, name='logout'),
-
 ]
