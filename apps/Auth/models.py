@@ -77,7 +77,7 @@ def send_mail_to_user(*args, created, instance, **kwargs):
         message = 'Your complaint was created successfully.'
         subject = 'Complaint Submitted'
         recipients = [instance.user.email]
-        send_mail(subject, message, sender, recipients)
+        # send_mail(subject, message, sender, recipients)
         get_officials = Profile.objects.filter(zip_code=instance.user.profile.zip_code, is_official=True)
         if get_officials:
             official_recipients = [get_officials.email]
