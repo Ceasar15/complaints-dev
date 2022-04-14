@@ -1,4 +1,3 @@
-import re
 from django.contrib.auth.models import User
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -7,11 +6,17 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import logout
 from rest_framework.exceptions import PermissionDenied
-
+from rest_framework.decorators import api_view
 from .models import Profile, EmergencyContacts, ComplaintsForm, Comment
-from .serializers import RegisterSerializer, \
-    MyTokenObtainPairSerializer, ProfileSerializer, \
-    ProfileSerializerGet, EmergencyContactsSerializer, ComplaintsFormSerializer, CommentSerializer
+from .serializers import (
+    RegisterSerializer,
+    MyTokenObtainPairSerializer,
+    ProfileSerializer,
+    ProfileSerializerGet,
+    EmergencyContactsSerializer,
+    ComplaintsFormSerializer,
+    CommentSerializer,
+)
 from rest_framework import generics, status
 
 
@@ -36,12 +41,11 @@ class ProfileViewPost(generics.ListCreateAPIView):
         user = self.request.user
         data = self.request.data
         data._mutable = True
-        data['user'] = user.id
+        data["user"] = user.id
         serializer = ProfileSerializer(data=self.request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,7 +64,7 @@ class ProfileViewUpdate(generics.RetrieveUpdateAPIView):
     permission_classes = (IsAuthenticated,)
     authentication_classes = (JWTAuthentication,)
     queryset = Profile.objects
-    lookup_field = 'user_id'
+    lookup_field = "user_id"
 
 
 class ProfileViewGet(generics.ListAPIView):
@@ -76,9 +80,10 @@ class ProfileViewGet(generics.ListAPIView):
         return self.queryset.filter(user=profile_owner)
 
 
+@api_view(["POST"])
 def logout_view(request):
     logout(request)
-    return ''
+    return Response({"status": "successfully logged out"})
 
 
 class EmergencyContactsView(generics.ListCreateAPIView):
@@ -114,7 +119,7 @@ class UpdateComplaintsForm(generics.UpdateAPIView):
     serializer_class = ComplaintsFormSerializer
     permission_classes = (IsAuthenticated,)
     authentication_classes = (JWTAuthentication,)
-    lookup_field = 'id'
+    lookup_field = "id"
     pagination_class = None
 
 
@@ -123,7 +128,7 @@ class DeleteComplaintsForm(generics.DestroyAPIView):
     serializer_class = ComplaintsFormSerializer
     permission_classes = (IsAuthenticated,)
     authentication_classes = (JWTAuthentication,)
-    lookup_field = 'id'
+    lookup_field = "id"
     pagination_class = None
 
 
@@ -131,10 +136,11 @@ class DetailComplaintsForm(generics.RetrieveAPIView):
     """
     Details of products by a user
     """
+
     queryset = ComplaintsForm.objects.all()
     model = ComplaintsForm
     serializer_class = ComplaintsFormSerializer
-    lookup_field = 'id'
+    lookup_field = "id"
 
 
 class CommentFormView(generics.ListCreateAPIView):
@@ -145,11 +151,10 @@ class CommentFormView(generics.ListCreateAPIView):
     pagination_class = None
 
     def perform_create(self, serializer):
-        profile = Profile.objects.get(id=self.kwargs['id'])
+        profile = Profile.objects.get(id=self.kwargs["id"])
         if not profile.is_official:
             raise PermissionDenied("Not Authorized")
         serializer.save(profile=profile)
 
     def get_queryset(self):
-        return self.queryset.filter(profile=self.kwargs['id'])
-
+        return self.queryset.filter(profile=self.kwargs["id"])
